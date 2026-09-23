@@ -1,0 +1,175 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   EyeSetu design tokens
+   Derived from the logo: "Eye" #20567D (navy) · "Setu" #1E8372 (teal)
+   ------------------------------------------------------------------ */
+@theme {
+  --color-navy-50: #f1f6fa;
+  --color-navy-100: #e3edf4;
+  --color-navy-200: #c3d7e6;
+  --color-navy-300: #93b6cf;
+  --color-navy-400: #5b8db2;
+  --color-navy-500: #2f6e9a;
+  --color-navy-600: #20567d;
+  --color-navy-700: #1a4766;
+  --color-navy-800: #153a53;
+  --color-navy-900: #0f2e45;
+  --color-navy-950: #0a1f2f;
+
+  --color-teal-50: #eef8f5;
+  --color-teal-100: #d8efe9;
+  --color-teal-200: #b0dfd3;
+  --color-teal-300: #7cc7b5;
+  --color-teal-400: #45a893;
+  --color-teal-500: #259380;
+  --color-teal-600: #1e8372;
+  --color-teal-700: #176a5c;
+  --color-teal-800: #13564b;
+  --color-teal-900: #0f463e;
+
+  --color-marigold-100: #fcefd9;
+  --color-marigold-400: #f0b458;
+  --color-marigold-500: #e9a23b;
+  --color-marigold-700: #a86a14;
+
+  --color-ink: #1c2733;
+  --color-ink-soft: #333333;
+  --color-muted: #5a6b7a;
+  --color-canvas: #faf8f4;
+  --color-sand: #f3efe8;
+  --color-line: #e6e4df;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-poppins), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-4xl: 2rem;
+
+  --shadow-soft: 0 1px 2px rgb(15 46 69 / 0.04), 0 8px 24px -8px rgb(15 46 69 / 0.1);
+  --shadow-lift: 0 2px 4px rgb(15 46 69 / 0.05), 0 20px 40px -16px rgb(15 46 69 / 0.22);
+  --shadow-glass: 0 12px 40px -12px rgb(10 31 47 / 0.35);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem; /* 17px, easier reading on phones */
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-navy-900);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-teal-100);
+    color: var(--color-navy-900);
+  }
+
+  :focus-visible {
+    outline: 2.5px solid var(--color-teal-600);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  summary {
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+@layer utilities {
+  /* Horizontal snap rows on mobile without a visible scrollbar */
+  .snap-row {
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .snap-row::-webkit-scrollbar {
+    display: none;
+  }
+  .snap-row > * {
+    scroll-snap-align: start;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* ------------------------------------------------------------------
+   Reveal-on-scroll: a gentle fade-up. Reveal.tsx adds .reveal-pending
+   only to below-the-fold elements and removes it when they enter view.
+   ------------------------------------------------------------------ */
+[data-reveal] {
+  transition:
+    opacity 700ms var(--ease-out-soft),
+    transform 700ms var(--ease-out-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal].reveal-pending {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: none;
+}
+
+/* Conditions ticker: two identical rows slide left by one row's width */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  width: max-content;
+  animation: marquee 48s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  /* Looping animations stop entirely rather than flicker */
+  .marquee,
+  .animate-ping {
+    animation: none !important;
+  }
+  [data-reveal].reveal-pending {
+    opacity: 1;
+    transform: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
